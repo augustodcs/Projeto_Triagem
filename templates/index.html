@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terra Fértil Jardins - Sistema de Triagem de Prestadores</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top App Navigation / Switcher -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a10 10 0 0 1 10 10c0 5.5-4.5 10-10 10S2 17.5 2 12A10 10 0 0 1 12 2z"/>
+            <path d="M12 6c-3 3-3 8 0 12"/>
+            <path d="M12 12c3-2 5-1 6 1"/>
+            <path d="M12 16c2-1 4-1 5 1"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">Terra Fértil Jardins</span>
+          <span class="brand-subtitle">Simulador de Triagem de Prestadores • MVP</span>
+        </div>
+      </div>
+
+      <div class="mode-tabs">
+        <button id="tabBtnMobile" class="mode-tab active" onclick="switchMode('mobile')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+            <path d="M12 18h.01"/>
+          </svg>
+          App do Jardineiro (Candidato)
+        </button>
+
+        <button id="tabBtnAdmin" class="mode-tab" onclick="switchMode('admin')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="14" height="20" x="5" y="2" rx="2" ry="2"/>
+            <path d="M12 18h.01"/>
+          </svg>
+          App da Gestão (Terra Fértil)
+          <span id="badgePendingCount" class="tab-badge">0</span>
+        </button>
+
+        <button id="tabBtnAbout" class="mode-tab" onclick="switchMode('about')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 16v-4"/>
+            <path d="M12 8h.01"/>
+          </svg>
+          Sobre o Projeto
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Areas -->
+  <main class="main-content">
+
+    <!-- ==================================================== -->
+    <!-- VIEW 1: SIMULADOR DO APP DO JARDINEIRO (MOBILE)      -->
+    <!-- ==================================================== -->
+    <section id="viewMobile" class="view-section active">
+      <div class="mobile-viewport-wrapper">
+        
+        <!-- Controls bar above mockup -->
+        <div class="mockup-controls">
+          <div class="mockup-hint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+            </svg>
+            Visão do Candidato: Cadastro e Acompanhamento de Status
+          </div>
+          <div class="quick-demo-links">
+            <button class="btn-secondary-sm" onclick="showCandidateStatusByCpf('456.789.012-34')">
+              ⚡ Testar Jorge (Doc Pendente)
+            </button>
+            <button class="btn-secondary-sm" onclick="toggleMobileConsultModal()">
+              🔍 Consultar Meu CPF
+            </button>
+          </div>
+        </div>
+
+        <!-- Phone Frame Container -->
+        <div class="phone-frame">
+          <div class="phone-speaker"></div>
+          <div class="phone-camera"></div>
+
+          <!-- Phone Screen -->
+          <div class="phone-screen">
+            
+            <!-- SUB-VIEW: WIZARD DE CADASTRO -->
+            <div id="candidateRegisterView" class="phone-subview active">
+              
+              <!-- Mobile App Top Bar -->
+              <div class="mobile-top-bar">
+                <div class="mobile-brand-row">
+                  <span class="mobile-brand-name">🌱 Terra Fértil Parceiros</span>
+                  <span class="mobile-step-pill" id="mobileStepPill">Etapa 1 de 4</span>
+                </div>
+                <h2 class="mobile-screen-title" id="mobileStepTitle">Dados Pessoais e Região</h2>
+                
+                <!-- Progress Bar -->
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="mobileProgressBar" style="width: 25%;"></div>
+                </div>
+              </div>
+
+              <!-- Form Multi-Step Body -->
+              <div class="mobile-body">
+                
+                <!-- ETAPA 1: Dados Pessoais & Região -->
+                <div id="step1" class="wizard-step active">
+                  <p class="step-intro">Preencha seus dados para darmos início ao credenciamento na sua região de atendimento.</p>
+
+                  <div class="form-group">
+                    <label>Nome Completo *</label>
+                    <input type="text" id="cad_nome" placeholder="Ex: José Aparecido Pereira" required>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label>CPF *</label>
+                      <input type="text" id="cad_cpf" placeholder="000.000.000-00" maxlength="14" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Data Nasc. *</label>
+                      <input type="date" id="cad_nasc" value="1990-06-15" required>
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label>WhatsApp / Celular *</label>
+                      <input type="text" id="cad_telefone" placeholder="(11) 99999-9999" maxlength="15" required>
+                    </div>
+                    <div class="form-group">
+                      <label>E-mail *</label>
+                      <input type="email" id="cad_email" placeholder="seuemail@exemplo.com" required>
+                    </div>
+                  </div>
+
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label>Cidade *</label>
+                      <input type="text" id="cad_cidade" value="São Paulo" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Bairro Base *</label>
+                      <input type="text" id="cad_bairro" placeholder="Ex: Santana / Moema" required>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Raio de atendimento pretendido</label>
+                    <select id="cad_raio">
+                      <option value="15">Até 15 km da minha base</option>
+                      <option value="25" selected>Até 25 km da minha base</option>
+                      <option value="40">Até 40 km (toda a região metropolitana)</option>
+                    </select>
+                  </div>
+
+                  <div class="step-actions">
+                    <button type="button" class="btn-primary" onclick="goToStep(2)">
+                      Continuar para Ferramental
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ETAPA 2: Ferramentas & Logística -->
+                <div id="step2" class="wizard-step">
+                  <p class="step-intro">Na Terra Fértil, os clientes contam que o parceiro leve seus próprios equipamentos de trabalho.</p>
+
+                  <div class="form-group">
+                    <label>Como você se desloca com o maquinário? *</label>
+                    <select id="cad_transporte" required>
+                      <option value="Carro próprio ou utilitário" selected>Carro de passeio ou utilitário (Picape/Furgão)</option>
+                      <option value="Moto com baú/reboque">Moto com baú / suporte</option>
+                      <option value="A pé / Transporte público">A pé / Transporte público</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Quais ferramentas próprias você possui? *</label>
+                    <div class="checkbox-grid">
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="ferramenta" value="Roçadeira a gasolina" checked>
+                        <span class="chk-box"></span>
+                        <span class="chk-text">Roçadeira (combustão ou bateria)</span>
+                      </label>
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="ferramenta" value="Podador de cerca viva" checked>
+                        <span class="chk-box"></span>
+                        <span class="chk-text">Podador elétrico / cerca viva</span>
+                      </label>
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="ferramenta" value="Soprador de folhas">
+                        <span class="chk-box"></span>
+                        <span class="chk-text">Soprador de folhas</span>
+                      </label>
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="ferramenta" value="Tesourão e Serrote de poda" checked>
+                        <span class="chk-box"></span>
+                        <span class="chk-text">Tesourão e Serrote de poda</span>
+                      </label>
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="ferramenta" value="Escada articulada">
+                        <span class="chk-box"></span>
+                        <span class="chk-text">Escada articulada ou extensor</span>
+                      </label>
+                      <label class="custom-checkbox">
+                        <input type="checkbox" name="ferramenta" value="Kit completo de EPIs" checked>
+                        <span class="chk-box"></span>
+                        <span class="chk-text">EPIs (óculos, luvas, perneira, protetor)</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="custom-checkbox highlight-box">
+                      <input type="checkbox" id="cad_residuos" checked>
+                      <span class="chk-box"></span>
+                      <span class="chk-text">Possuo sacos e condições de ensacar/recolher restos verdes gerados no serviço</span>
+                    </label>
+                  </div>
+
+                  <div class="step-actions row-between">
+                    <button type="button" class="btn-ghost" onclick="goToStep(1)">Voltar</button>
+                    <button type="button" class="btn-primary" onclick="goToStep(3)">
+                      Avançar para Teste
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ETAPA 3: Experiência & Quiz Situacional -->
+                <div id="step3" class="wizard-step">
+                  <p class="step-intro">Conte sobre sua bagagem e responda 3 perguntas rápidas para atestar suas boas práticas.</p>
+
+                  <div class="form-group">
+                    <label>Tempo de atuação em jardinagem</label>
+                    <select id="cad_experiencia">
+                      <option value="Menos de 1 ano">Menos de 1 ano (iniciante)</option>
+                      <option value="1 a 3 anos">1 a 3 anos</option>
+                      <option value="3 a 5 anos" selected>3 a 5 anos (experiente)</option>
+                      <option value="Mais de 5 anos">Mais de 5 anos (profissional sênior)</option>
+                    </select>
+                  </div>
+
+                  <div class="quiz-card">
+                    <div class="quiz-header">
+                      <span class="quiz-tag">Mini-Quiz de Triagem (3 Questões)</span>
+                    </div>
+
+                    <!-- Pergunta 1 -->
+                    <div class="quiz-question">
+                      <p class="q-title"><strong>1.</strong> Ao operar a roçadeira próxima a janelas ou carros estacionados, qual a atitude correta?</p>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q1" value="a">
+                        <span>Acelerar no máximo para terminar rápido antes que alguém apareça.</span>
+                      </label>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q1" value="b" checked>
+                        <span>Usar tela de contenção móvel ou pedir para afastar os veículos, reduzindo riscos de pedras lançadas.</span>
+                      </label>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q1" value="c">
+                        <span>Não há necessidade de cuidados especiais se o fio de nylon for fino.</span>
+                      </label>
+                    </div>
+
+                    <!-- Pergunta 2 -->
+                    <div class="quiz-question">
+                      <p class="q-title"><strong>2.</strong> O cliente pede na hora um serviço pesado não contratado pelo app. Como proceder?</p>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q2" value="a">
+                        <span>Cobrar por fora em dinheiro sem registrar na Terra Fértil.</span>
+                      </label>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q2" value="b">
+                        <span>Fazer de graça como cortesia mesmo que atrase o próximo cliente.</span>
+                      </label>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q2" value="c" checked>
+                        <span>Explicar cordialmente e orientar a inclusão do serviço adicional pelo próprio aplicativo Terra Fértil.</span>
+                      </label>
+                    </div>
+
+                    <!-- Pergunta 3 -->
+                    <div class="quiz-question">
+                      <p class="q-title"><strong>3.</strong> Qual o melhor horário para aplicar adubos e realizar regas mais profundas no jardim?</p>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q3" value="a" checked>
+                        <span>No início da manhã ou no fim da tarde, para a água não evaporar e não queimar as folhas ao sol.</span>
+                      </label>
+                      <label class="quiz-option">
+                        <input type="radio" name="quiz_q3" value="b">
+                        <span>Ao meio-dia sob sol pleno para acelerar a absorção rápida.</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="step-actions row-between">
+                    <button type="button" class="btn-ghost" onclick="goToStep(2)">Voltar</button>
+                    <button type="button" class="btn-primary" onclick="goToStep(4)">
+                      Ir para Documentação
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ETAPA 4: Documentos & Antecedentes -->
+                <div id="step4" class="wizard-step">
+                  <p class="step-intro">Para segurança dos clientes e acesso aos condomínios, precisamos validar sua identificação e antecedentes.</p>
+
+                  <!-- Document Upload Simulator -->
+                  <div class="doc-upload-box">
+                    
+                    <!-- Doc 1: RG / CNH -->
+                    <div class="doc-upload-item">
+                      <div class="doc-upload-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                      </div>
+                      <div class="doc-upload-info">
+                        <strong>Documento Oficial (RG ou CNH) *</strong>
+                        <span class="file-name" id="fileNameDoc">cnh_frente_verso.jpg</span>
+                      </div>
+                      <button type="button" class="btn-upload-sim" onclick="simularTrocaArquivo('fileNameDoc', 'novo_rg_frente_verso.jpg')">
+                        Alterar
+                      </button>
+                    </div>
+
+                    <!-- Doc 2: Selfie com Documento -->
+                    <div class="doc-upload-item">
+                      <div class="doc-upload-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                      </div>
+                      <div class="doc-upload-info">
+                        <strong>Selfie segurando o documento *</strong>
+                        <span class="file-name" id="fileNameSelfie">selfie_comprovacao.jpg</span>
+                      </div>
+                      <button type="button" class="btn-upload-sim" onclick="simularTrocaArquivo('fileNameSelfie', 'nova_selfie_rosto_nitida.jpg')">
+                        Alterar
+                      </button>
+                    </div>
+
+                    <!-- Doc 3: Certidão de Antecedentes Criminais (NOVO) -->
+                    <div class="doc-upload-item highlight-doc">
+                      <div class="doc-upload-icon text-indigo">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                      </div>
+                      <div class="doc-upload-info">
+                        <strong>Certidão de Antecedentes Criminais *</strong>
+                        <span class="file-name" id="fileNameAntecedentes">certidao_antecedentes_federal.pdf</span>
+                        <a href="https://www.gov.br/pt-br/servicos/emitir-certidao-de-antecedentes-criminais" target="_blank" class="help-link">
+                          Como emitir certidão gratuita da Polícia Federal ↗
+                        </a>
+                      </div>
+                      <button type="button" class="btn-upload-sim" onclick="simularTrocaArquivo('fileNameAntecedentes', 'nova_certidao_atualizada.pdf')">
+                        Alterar
+                      </button>
+                    </div>
+
+                  </div>
+
+                  <div class="form-group">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" id="cad_possui_mei" onchange="toggleMeiField(this.checked)">
+                      <span class="chk-box"></span>
+                      <span class="chk-text">Possuo MEI cadastrado (Microempreendedor Individual)</span>
+                    </label>
+                  </div>
+
+                  <div class="form-group" id="groupMeiCnpj" style="display: none;">
+                    <label>CNPJ do MEI</label>
+                    <input type="text" id="cad_cnpj" placeholder="00.000.000/0001-00">
+                  </div>
+
+                  <!-- Antecedentes e LGPD -->
+                  <div class="compliance-box">
+                    <label class="custom-checkbox">
+                      <input type="checkbox" id="cad_antecedentes" checked required>
+                      <span class="chk-box"></span>
+                      <span class="chk-text">Declaro a veracidade dos dados e autorizo a conferência pública de certidões sob as penas da lei.</span>
+                    </label>
+                    
+                    <label class="custom-checkbox mt-2">
+                      <input type="checkbox" id="cad_termos" checked required>
+                      <span class="chk-box"></span>
+                      <span class="chk-text">Concordo com a <a href="javascript:void(0)" onclick="toggleLgpdModal()" style="color:#15803d; text-decoration:underline; font-weight:700;">Política de Privacidade e Termos de Uso (LGPD)</a>.</span>
+                    </label>
+                  </div>
+
+                  <div class="step-actions row-between">
+                    <button type="button" class="btn-ghost" onclick="goToStep(3)">Voltar</button>
+                    <button type="button" class="btn-success" id="btnSubmitCandidate" onclick="submitCandidate()">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                      Concluir e Enviar para Triagem
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- SUB-VIEW: ACOMPANHAMENTO DO MEU CADASTRO / REGULARIZAÇÃO -->
+            <div id="candidateStatusView" class="phone-subview">
+              
+              <div class="mobile-top-bar" id="statusViewTopBar">
+                <div class="mobile-brand-row">
+                  <span class="mobile-brand-name">🌱 Terra Fértil Jardins</span>
+                  <button class="btn-top-back" onclick="backToRegisterView()">+ Novo Cadastro</button>
+                </div>
+                <h2 class="mobile-screen-title" id="statusCandidateName">José Carlos</h2>
+                <div class="status-protocol-row">
+                  <span>Protocolo: <strong id="statusCandidateProtocol">TF-2026-1003</strong></span>
+                  <span id="statusCandidateDate">23/10/2026</span>
+                </div>
+              </div>
+
+              <div class="mobile-body">
+                
+                <!-- Status Big Banner -->
+                <div class="candidate-status-card" id="statusMainCard">
+                  <div class="status-badge-lg" id="statusBadgeLg">PENDÊNCIA DE DOCUMENTO</div>
+                  <h3 id="statusMainTitle" class="mt-2">Ação necessária no seu cadastro</h3>
+                  <div class="status-explanation-box" id="statusExplanationText">
+                    A foto do documento enviada está com reflexo e corte no número do RG.
+                  </div>
+                </div>
+
+                <!-- BOX DE REENVIO DE DOCUMENTO (Quando status = PENDENCIA_DOC) -->
+                <div id="boxReenvioDocumento" class="resubmission-card">
+                  <div class="resubmission-header">
+                    <div class="resub-icon">📤</div>
+                    <div>
+                      <h4>Regularizar e Reenviar Documento</h4>
+                      <p class="text-xs">Selecione o documento corrigido e envie para reavaliação imediata.</p>
+                    </div>
+                  </div>
+
+                  <div class="form-group mt-3">
+                    <label>Qual documento você está regularizando? *</label>
+                    <select id="resubDocType">
+                      <option value="doc_frente" selected>Documento Oficial com Foto (RG ou CNH)</option>
+                      <option value="doc_selfie">Selfie segurando o Documento</option>
+                      <option value="certidao_antecedentes">Certidão de Antecedentes Criminais</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Selecione a nova foto / arquivo nítido: *</label>
+                    <div class="upload-dropzone" onclick="simularArquivoReenvio()">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+                      <span id="resubFileNameDisplay">Clique para selecionar foto nítida</span>
+                      <small class="text-xs text-muted">Toque aqui para simular o anexo de arquivo corrigido</small>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Mensagem ou observação para a equipe (opcional):</label>
+                    <textarea id="resubComment" rows="2" placeholder="Ex: Tirei uma nova foto com boa iluminação sem reflexo."></textarea>
+                  </div>
+
+                  <button type="button" class="btn-success" id="btnSendResubmission" onclick="submitDocumentResubmission()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Reenviar Documento para Nova Análise
+                  </button>
+                </div>
+
+                <!-- BOX DE APROVAÇÃO (Quando status = APROVADO) -->
+                <div id="boxAprovadoCelebracao" class="celebration-card" style="display: none;">
+                  <div class="celebration-badge">⭐ JARDINEIRO VERIFICADO ⭐</div>
+                  <h4>Tudo certo com seu credenciamento!</h4>
+                  <p class="text-sm mt-2">Você foi aprovado na triagem de prestadores da Terra Fértil. Seu perfil está ativo e apto para receber notificações de serviços na sua região.</p>
+                  <div class="checked-list mt-3">
+                    <div>✓ Documentação e antecedentes verificados</div>
+                    <div>✓ Maquinário e logística validados</div>
+                    <div>✓ Teste técnico de segurança concluído</div>
+                  </div>
+                </div>
+
+                <!-- BOX DE REPROVAÇÃO (Quando status = REPROVADO) -->
+                <div id="boxReprovadoFeedback" class="rejection-card" style="display: none;">
+                  <h4>Inscrição não aprovada nos critérios operacionais</h4>
+                  <p class="text-sm mt-2" id="rejectionDetailText">O perfil não atende aos requisitos mínimos de maquinário ou região de cobertura.</p>
+                  <p class="text-xs text-muted mt-2">Você poderá solicitar um novo credenciamento assim que dispor dos equipamentos mínimos necessários.</p>
+                </div>
+
+                <!-- Resumo dos dados cadastrados -->
+                <div class="candidate-summary-fold mt-3">
+                  <h5>Resumo do Perfil Cadastrado</h5>
+                  <ul class="summary-list text-xs">
+                    <li><span>Telefone / WhatsApp:</span> <strong id="sumPhone">-</strong></li>
+                    <li><span>Cidade / Bairro:</span> <strong id="sumCity">-</strong></li>
+                    <li><span>Transporte:</span> <strong id="sumTransport">-</strong></li>
+                    <li><span>Ferramentas:</span> <strong id="sumTools">-</strong></li>
+                    <li><span>Nota no Quiz:</span> <strong id="sumQuiz">-</strong></li>
+                  </ul>
+                </div>
+
+                <div class="mt-4 mb-3">
+                  <button class="btn-ghost" onclick="backToRegisterView()">
+                    ← Realizar Novo Cadastro
+                  </button>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <!-- Phone bottom line -->
+          <div class="phone-home-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================== -->
+    <!-- VIEW 2: PAINEL DA GESTÃO TERRA FÉRTIL (MOBILE-FIRST) -->
+    <!-- ==================================================== -->
+    <section id="viewAdmin" class="view-section">
+      <div class="mobile-viewport-wrapper">
+        
+        <!-- Controls bar above mockup -->
+        <div class="mockup-controls">
+          <div class="mockup-hint">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/>
+            </svg>
+            Visão do Gestor: App Mobile da Central Terra Fértil
+          </div>
+          <button class="btn-secondary-sm" onclick="resetDemoData()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Restaurar Base de Testes
+          </button>
+        </div>
+
+        <!-- Phone Frame Container -->
+        <div class="phone-frame">
+          <div class="phone-speaker"></div>
+          <div class="phone-camera"></div>
+
+          <!-- Phone Screen -->
+          <div class="phone-screen">
+            
+            <!-- SUB-VIEW 1: LISTA & KPIS DO GESTOR -->
+            <div id="gestorListView" class="phone-subview active">
+              
+              <!-- Gestor Top Bar -->
+              <div class="gestor-top-bar">
+                <div class="gestor-top-brand">
+                  <div class="gestor-avatar">TF</div>
+                  <div>
+                    <h3 class="gestor-title">Terra Fértil Gestão</h3>
+                    <span class="gestor-status-dot">● Central de Homologação</span>
+                  </div>
+                </div>
+                <button class="btn-icon-refresh" onclick="fetchCandidates(); fetchStats();" title="Atualizar dados">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                </button>
+              </div>
+
+              <!-- Gestor KPIs Grid (Compact Mobile) -->
+              <div class="gestor-kpi-row">
+                <div class="gestor-kpi-mini alert-amber">
+                  <span class="val" id="kpiEmAnalise">0</span>
+                  <span class="lbl">Em Análise</span>
+                </div>
+                <div class="gestor-kpi-mini alert-blue">
+                  <span class="val" id="kpiPendentes">0</span>
+                  <span class="lbl">Doc Pendente</span>
+                </div>
+                <div class="gestor-kpi-mini alert-green">
+                  <span class="val" id="kpiAprovados">0</span>
+                  <span class="lbl">Aprovados</span>
+                </div>
+                <div class="gestor-kpi-mini alert-red">
+                  <span class="val" id="kpiReprovados">0</span>
+                  <span class="lbl">Reprovados</span>
+                </div>
+              </div>
+
+              <!-- Gestor Filter Tabs & Search -->
+              <div class="gestor-filter-strip">
+                <div class="gestor-search-box">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                  <input type="text" id="gestorSearchInput" placeholder="Buscar parceiro..." onkeyup="filterCandidatesMobile()">
+                </div>
+                <div class="gestor-chips-scroll" id="gestorFilterChips">
+                  <button class="gestor-chip active" data-status="TODOS" onclick="setMobileFilter('TODOS')">Todos</button>
+                  <button class="gestor-chip" data-status="EM_ANALISE" onclick="setMobileFilter('EM_ANALISE')">Em Análise</button>
+                  <button class="gestor-chip" data-status="PENDENCIA_DOC" onclick="setMobileFilter('PENDENCIA_DOC')">Doc Pendente</button>
+                  <button class="gestor-chip" data-status="APROVADO" onclick="setMobileFilter('APROVADO')">Aprovados</button>
+                  <button class="gestor-chip" data-status="REPROVADO" onclick="setMobileFilter('REPROVADO')">Reprovados</button>
+                </div>
+              </div>
+
+              <!-- Candidates Card List Body -->
+              <div class="mobile-body p-2" id="gestorCandidateCardsContainer">
+                <!-- Rendered by JS -->
+                <div class="text-center p-3 text-muted text-xs">Carregando candidatos...</div>
+              </div>
+
+            </div>
+
+            <!-- SUB-VIEW 2: DOSSIÊ COMPLETO DO CANDIDATO (MOBILE) -->
+            <div id="gestorDetailView" class="phone-subview">
+              
+              <div class="dossie-top-bar">
+                <button class="btn-back-dossie" onclick="closeGestorDetailView()">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+                  Voltar à Lista
+                </button>
+                <span class="dossie-protocol-badge" id="gdProtocol">TF-2026-0000</span>
+              </div>
+
+              <div class="mobile-body p-3">
+                
+                <!-- Candidate Header -->
+                <div class="dossie-candidate-header">
+                  <div class="dossie-avatar" id="gdAvatar">SC</div>
+                  <div>
+                    <h3 id="gdNome" class="dossie-name">Sebastião Carlos</h3>
+                    <span id="gdRegiao" class="text-xs text-muted">São Paulo • Santo Amaro</span>
+                  </div>
+                </div>
+
+                <!-- Current Status Box -->
+                <div class="status-summary-strip" id="gdStatusStrip">
+                  <span class="badge-status" id="gdStatusBadge">EM ANÁLISE</span>
+                  <p class="text-xs mt-1" id="gdStatusMotivo">Aguardando conferência de documentação.</p>
+                </div>
+
+                <!-- WhatsApp Quick Action -->
+                <a id="gdWhatsappBtn" href="#" target="_blank" class="btn-whatsapp-mobile mt-2">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  Conversar com o Jardineiro no WhatsApp
+                </a>
+
+                <!-- Section: Maquinário & Transporte -->
+                <div class="dossie-card mt-3">
+                  <div class="dossie-card-title">🛠️ Maquinário & Deslocamento</div>
+                  <div class="text-xs text-muted mb-1">Meio de Transporte: <strong id="gdTransporte" class="text-dark">-</strong></div>
+                  <div class="text-xs text-muted mb-2">Descarte de restos verdes: <strong id="gdResiduos" class="text-dark">-</strong></div>
+                  
+                  <span class="text-xs font-bold text-muted">Ferramentas Próprias Declaradas:</span>
+                  <div class="tools-tags mt-1" id="gdFerramentasList">
+                    <!-- tools -->
+                  </div>
+                </div>
+
+                <!-- Section: Documentos & Antecedentes -->
+                <div class="dossie-card mt-3">
+                  <div class="dossie-card-title">📑 Documentos e Antecedentes</div>
+                  <ul class="dossie-doc-checklist text-xs">
+                    <li>
+                      <span class="check-icon">✓</span>
+                      <div>
+                        <strong>Doc com Foto (RG/CNH):</strong>
+                        <div id="gdDocFrente" class="text-muted">cnh_frente.jpg</div>
+                      </div>
+                    </li>
+                    <li>
+                      <span class="check-icon">✓</span>
+                      <div>
+                        <strong>Selfie de Identificação:</strong>
+                        <div id="gdDocSelfie" class="text-muted">selfie.jpg</div>
+                      </div>
+                    </li>
+                    <li>
+                      <span class="check-icon">✓</span>
+                      <div>
+                        <strong>Certidão Antecedentes:</strong>
+                        <div id="gdDocAntecedentes" class="text-muted">certidao_federal.pdf</div>
+                      </div>
+                    </li>
+                    <li>
+                      <span class="check-icon">✓</span>
+                      <div>
+                        <strong>MEI / CNPJ:</strong>
+                        <div id="gdDocMei" class="text-muted">Não possui</div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+
+                <!-- Section: Quiz Técnico -->
+                <div class="dossie-card mt-3">
+                  <div class="dossie-card-title">📝 Teste Técnico de Segurança</div>
+                  <div class="quiz-score-row">
+                    <span class="text-xs">Nota no Mini-Quiz:</span>
+                    <strong class="score-badge high" id="gdQuizScore">100%</strong>
+                  </div>
+                  <div class="text-xs text-muted mt-1" id="gdQuizFeedback">Candidato demonstrou domínio dos procedimentos de segurança e atendimento.</div>
+                </div>
+
+                <!-- Section: Anotações Internas -->
+                <div class="dossie-card mt-3">
+                  <div class="dossie-card-title">🔒 Anotações Internas da Terra Fértil</div>
+                  <textarea id="gdObsInternas" rows="2" class="form-control-xs" placeholder="Adicione notas confidenciais sobre este parceiro..."></textarea>
+                </div>
+
+                <!-- DECISION BAR WITH INLINE TEMPLATES (NO BROWSER PROMPT!) -->
+                <div class="decision-section mt-4 mb-3">
+                  <h4 class="decision-title">Tomar Decisão sobre o Candidato:</h4>
+                  
+                  <div class="decision-buttons-grid">
+                    <button type="button" class="btn-dec-danger" onclick="openDecisionSheet('REPROVADO')">
+                      ✕ Reprovar
+                    </button>
+                    <button type="button" class="btn-dec-amber" onclick="openDecisionSheet('PENDENCIA_DOC')">
+                      ⚠️ Pedir Correção de Doc
+                    </button>
+                    <button type="button" class="btn-dec-green" onclick="openDecisionSheet('APROVADO')">
+                      ✓ Aprovar Parceiro
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              <!-- SLIDE-UP ACTION SHEET PARA DECISÃO DO GESTOR (Substitui o prompt) -->
+              <div id="decisionActionSheet" class="action-sheet-overlay">
+                <div class="action-sheet-box">
+                  <div class="action-sheet-header">
+                    <h4 id="sheetTitle">Registrar Decisão</h4>
+                    <button class="sheet-close-btn" onclick="closeDecisionSheet()">&times;</button>
+                  </div>
+                  
+                  <div class="action-sheet-body">
+                    <label class="text-xs font-bold text-muted">Modelos de Mensagem Rápida (Toque para usar):</label>
+                    <div class="quick-chips-row mt-1" id="sheetQuickChips">
+                      <!-- Chips filled dynamically -->
+                    </div>
+
+                    <label class="text-xs font-bold text-muted mt-3 block">Mensagem que será enviada/registrada:</label>
+                    <textarea id="sheetMessageInput" rows="3" class="sheet-textarea"></textarea>
+                  </div>
+
+                  <div class="action-sheet-footer">
+                    <button class="btn-ghost" onclick="closeDecisionSheet()">Cancelar</button>
+                    <button class="btn-success" id="btnConfirmDecision" onclick="confirmDecisionFromSheet()">
+                      Confirmar Decisão
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- Phone bottom line -->
+          <div class="phone-home-bar"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================== -->
+    <!-- VIEW 3: SOBRE O PROJETO (ACADÊMICO)                  -->
+    <!-- ==================================================== -->
+    <section id="viewAbout" class="view-section">
+      <div class="about-container">
+        <div class="about-hero">
+          <span class="badge-academic">Engenharia da Computação • Disciplina Tecnologia e Sociedade</span>
+          <h1>Sistema de Triagem e Qualificação de Prestadores</h1>
+          <p>Projeto de extensão universitária desenvolvido em parceria com a <strong>Terra Fértil Jardins</strong>.</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-card">
+            <h3>🌱 O Parceiro e o Desafio</h3>
+            <p>A <strong>Terra Fértil Jardins</strong> atua como integradora de serviços de jardinagem e paisagismo nos moldes de plataformas como Uber e iFood. O grande desafio identificado é garantir a confiabilidade e idoneidade dos prestadores antes de liberá-los para atender clientes em condomínios e residências particulares.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>⚖️ Impacto Social, Dignidade e LGPD</h3>
+            <p>O projeto aborda a dignidade do trabalhador autônomo. A triagem não funciona como mecanismo excludente, mas sim como instrumento de <strong>valorização profissional e capacitação</strong> (concedendo o selo de Jardineiro Verificado), ao mesmo tempo em que protege dados sensíveis conforme preconizado pela LGPD.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>⚙️ Arquitetura e Engenharia</h3>
+            <p>Desenvolvido em Python com banco de dados SQLite local, interface desacoplada e empacotamento autocontido para Windows. Isso permite ao empreendedor executar o protótipo com um clique e, em seguida, mapear a integração com a base definitiva de seu aplicativo mobile.</p>
+          </div>
+
+          <div class="about-card">
+            <h3>🛡️ Auditoria de Segurança e Conformidade (LGPD & OWASP)</h3>
+            <p>A aplicação foi construída sob os preceitos de <strong>Privacy by Design</strong>:
+              <br>• <strong>Isolamento Local (127.0.0.1):</strong> O servidor roda exclusivamente na interface de loopback, impedindo escutas ou conexões não autorizadas vindas da rede local (LAN).
+              <br>• <strong>Proteção contra Injeção e XSS:</strong> Consultas parametrizadas (Prepared Statements no SQLite) e sanitização estrita de strings no DOM (OWASP Top 10).
+              <br>• <strong>Cabeçalhos HTTP Seguros:</strong> Content-Security-Policy (CSP), X-Frame-Options (anti-clickjacking), X-Content-Type-Options (nosniff) e proteção contra buffer overflow de uploads (MAX_CONTENT_LENGTH limitado a 2MB).
+              <br>• <strong>Governança de Dados (Art. 6º e 18 da LGPD):</strong> Consentimento explícito, finalidade estrita de triagem e direito do titular à retificação e exclusão.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal de Termos de Privacidade e LGPD -->
+  <div id="modalLgpdTerms" class="modal-overlay">
+    <div class="modal-card" style="max-width: 650px;">
+      <div class="modal-header">
+        <div>
+          <span class="modal-protocolo">LEGISLAÇÃO E CONFORMIDADE</span>
+          <h3 class="modal-title">Política de Privacidade e Proteção de Dados (LGPD)</h3>
+        </div>
+        <button class="modal-close-btn" onclick="toggleLgpdModal()">&times;</button>
+      </div>
+      <div class="modal-body text-xs" style="line-height: 1.6; max-height: 60vh; overflow-y: auto;">
+        <p><strong>1. Finalidade do Tratamento (Art. 6º, I da Lei 13.709/2018):</strong><br>
+        Os dados pessoais fornecidos (Nome, CPF, RG, Telefone, Região, fotos de documentos e certidão de antecedentes) destinam-se exclusivamente ao processo de triagem, análise de idoneidade, validação de maquinário próprio e credenciamento na plataforma <em>Terra Fértil Jardins</em>.</p>
+        
+        <p class="mt-2"><strong>2. Base Legal (Art. 7º, I e V):</strong><br>
+        O tratamento fundamenta-se no consentimento expresso do titular e na execução de procedimentos preliminares relacionados ao contrato de prestação de serviços como parceiro credenciado.</p>
+
+        <p class="mt-2"><strong>3. Dados Sensíveis e Antecedentes Criminais (Art. 11):</strong><br>
+        A conferência da certidão de antecedentes criminais e validação de selfie é estritamente voltada à segurança patrimonial dos clientes e moradores dos condomínios atendidos, sem qualquer finalidade discriminatória.</p>
+
+        <p class="mt-2"><strong>4. Armazenamento e Medidas de Segurança (Art. 46):</strong><br>
+        Os dados são processados localmente em banco de dados isolado e seguro. O sistema adota cabeçalhos de segurança HTTP, parametrização contra SQL Injection e não comercializa nem transfere dados a terceiros não autorizados.</p>
+
+        <p class="mt-2"><strong>5. Direitos do Titular (Art. 18):</strong><br>
+        O candidato pode a qualquer momento consultar o status do seu cadastro, solicitar a retificação de dados incorretos ou a revogação do consentimento e exclusão de sua candidatura.</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-success" onclick="toggleLgpdModal()">Compreendi e Concordo</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Consultar Status do Jardineiro (Pelo CPF / Protocolo) -->
+  <div id="modalConsultarStatus" class="modal-overlay">
+    <div class="modal-card small-modal">
+      <div class="modal-header">
+        <h3 class="modal-title">Consultar Meu Cadastro</h3>
+        <button class="modal-close-btn" onclick="toggleMobileConsultModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-sm">Digite o seu CPF ou o código de Protocolo recebido:</p>
+        <div class="form-group mt-2">
+          <input type="text" id="consultTermoInput" placeholder="Ex: 456.789.012-34 ou TF-2026-1003">
+        </div>
+        <div class="quick-test-hint mt-2">
+          <small class="text-muted">Dica de teste rápido:</small>
+          <button type="button" class="chip-sm" onclick="preencherConsulta('456.789.012-34')">Jorge (Doc Pendente)</button>
+          <button type="button" class="chip-sm" onclick="preencherConsulta('234.567.890-12')">Sebastião (Aprovado)</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-ghost" onclick="toggleMobileConsultModal()">Fechar</button>
+        <button class="btn-primary" onclick="realizarConsultaStatusModal()">Ver no App do Jardineiro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
